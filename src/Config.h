@@ -12,9 +12,6 @@ const int WATCH_RST_PIN = 8;
 const int DEFAULT_DEC_DEGREE = 90;
 const int DEFAULT_DEC_MINUTE = 0;
 const int DEFAULT_DEC_SECONDS = 0;
-const int DEFAULT_RA_HOUR = 0;
-const int DEFAULT_RA_MINUTE = 0;
-const int DEFAULT_RA_SECONDS = 0;
 // Declination module
 const double DEC_GEAR_TRAIN = 3.375;
 const int DEC_DEFAULT_RPM = 800;
