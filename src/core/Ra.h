@@ -1,73 +1,98 @@
 #include <Stepper.h>
 #include <Config.h>
+#include <Watch.h>
 
 Stepper raStepper(RA_MOTOR_STEPS, RA_DIRECTION_PIN, RA_SPEED_PIN);
+Watch watch;
 
 class Ra
 {
 private:
-  int hour = DEFAULT_RA_HOUR;
-  int minute = DEFAULT_RA_MINUTE;
-  double seconds = DEFAULT_RA_SECONDS;
-
-  int rpm = RA_DEFAULT_RPM;
-  double stepsPerFullTurn = (long)RA_MOUNT_STEPS * (long)RA_MOTOR_STEPS * (long)RA_GEAR_TRAIN * (long)RA_MICRO_STEPS;
-  double secondsForFullTurn = (double)24 * 60 * 60;
+  long mountTime = 0;
+  long mountStarTime = 0;
+  double stepsPerFullTurn = RA_MOUNT_STEPS * RA_MOTOR_STEPS * RA_GEAR_TRAIN * RA_MICRO_STEPS;
+  double secondsForFullTurn = 24.00 * 60.00 * 60.00;
   double secondsPerStep = secondsForFullTurn / stepsPerFullTurn;
 
 public:
   Ra()
   {
+    setRpm(RA_DEFAULT_RPM);
+    Serial.println("RA MODULE: initialization finished");
+  }
+
+  long getSeconds(int hour, int min, int sec)
+  {
+    return ((((long)hour * 60) + min) * 60) + sec;
+  }
+
+  void setRpm(int rpm)
+  {
     raStepper.setSpeed(rpm);
-    Serial.println("Ra module initialized");
   }
 
-  long getSeconds(int h, int m, int s)
+  void init()
   {
-    return ((((long)h * 60) + m) * 60) + s;
-  }
+    mountStarTime = watch.getRAStarTime(mountTime);
 
-  void setRpm(int r)
-  {
-    rpm = r;
-    raStepper.setSpeed(rpm);
-  }
-
-  void goTo(int h, int m, int s)
-  {
-    long steps = getStepsToMove(h, m, s);
-    Serial.print("Ra steps to move: ");
-    Serial.println(steps);
-
-    hour = h;
-    minute = m;
-    seconds = s;
-    // Is the number of steps per command
-    int indexSteps = 10000;
-    long index = steps / indexSteps;
-    int remainder = steps % indexSteps;
-
-    if (steps < 0)
+    while (true)
     {
-      index = -(index);
+      long starTime = watch.getRAStarTime(mountTime);
+
+      if (starTime != mountStarTime)
+      {
+        Serial.println("RA AXIS: change coordinate");
+        long secondsForMove = starTime - mountStarTime;
+        long steps = getStepsToMove(secondsForMove);
+
+        move(steps);
+        // TODO
+        if (mountTime + secondsForMove >= 24 * 60 * 60)
+        {
+          mountTime = secondsForMove - 24 * 60 * 60;
+        }
+        else if (mountTime + secondsForMove < 0)
+        {
+          mountTime = 24 * 60 * 60 + secondsForMove;
+        }
+        else
+        {
+          mountTime += secondsForMove;
+        }
+      }
     }
+  }
+
+  long getStepsToMove(int sec)
+  {
+    return sec / secondsPerStep;
+  }
+
+  void move(long steps)
+  {
+    Serial.println("RA AXIS: move move...");
+    // Is the number of steps per command
+    int iterationSteps = 10000;
+    int index = abs(steps / iterationSteps);
+    int remainderSteps = steps % iterationSteps;
 
     while (index > 0)
     {
-      raStepper.step(steps < 0 ? -(indexSteps) : indexSteps);
+      raStepper.step(iterationSteps);
       index--;
     }
-    raStepper.step((int)remainder);
-    Serial.println("Ra done");
+
+    raStepper.step(remainderSteps);
+    Serial.println("RA AXIS: move over");
   }
 
-  double getStepsToMove(int h, int m, int s)
+  void setMountStarTime(int h, int m, int s)
   {
-    double toGoSeconds = getSeconds(h, m, s);
-    double currentSeconds = getSeconds(hour, minute, seconds);
-    double secondsForMove = currentSeconds - toGoSeconds;
-    double steps = secondsForMove / secondsPerStep;
+    mountStarTime = getSeconds(h, m, s);
+  }
 
-    return steps;
+  long getMountStarTime()
+  {
+    return mountStarTime;
   }
 };

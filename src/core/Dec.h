@@ -7,10 +7,12 @@ Stepper decStepper(DEC_MOTOR_STEPS, DEC_DIRECTION_PIN, DEC_SPEED_PIN);
 class Dec
 {
 private:
+  int currentDegree = DEFAULT_DEC_DEGREE;
+  int currentMinute = DEFAULT_DEC_MINUTE;
+  int currentSeconds = DEFAULT_DEC_SECONDS;
   int degree = DEFAULT_DEC_DEGREE;
   int minute = DEFAULT_DEC_MINUTE;
   int seconds = DEFAULT_DEC_SECONDS;
-  long currentStep = 0;
   double stepsPerFullTurn = DEC_MOUNT_STEPS * DEC_MOTOR_STEPS * DEC_GEAR_TRAIN * DEC_MICRO_STEPS;
   double secondsForFullTurn = 360.00 * 60.00 * 60.00;
   double secondsPerStep = secondsForFullTurn / stepsPerFullTurn;
@@ -19,7 +21,7 @@ public:
   Dec()
   {
     setRpm(DEC_DEFAULT_RPM);
-    Serial.println("DEC module initialized");
+    Serial.println("DEC MODULE: initialization finished");
   }
 
   long getDegreeSeconds(int deg, int min, int sec)
@@ -33,32 +35,34 @@ public:
     decStepper.setSpeed(rpm);
   }
 
-  void goTo(int deg, int min, int sec)
+  void init()
   {
-    long steps = getStepsToMove(deg, min, sec);
-   
-    move(steps);
+    while (true)
+    {
+      long currentTotalSeconds = getDegreeSeconds(currentDegree, currentMinute, currentSeconds);
+      long totalSeconds = getDegreeSeconds(degree, minute, seconds);
 
-    degree = deg;
-    minute = min;
-    seconds = sec;
-    currentStep += steps;
-    Serial.println("DEC done");
+      if (currentTotalSeconds != totalSeconds)
+      {
+        Serial.println("DEC AXIS: change coordinate");
+        long secondsForMove = currentTotalSeconds - totalSeconds;
+        long steps = getStepsToMove(secondsForMove);
+        move(steps);
+        currentDegree = degree;
+        currentMinute = minute;
+        currentSeconds = seconds;
+      }
+    }
   }
 
-  double getStepsToMove(int deg, int min, int sec)
+  long getStepsToMove(long secondsForMove)
   {
-    double degreeSeconds = getDegreeSeconds(deg, min, sec);
-    double currentSeconds = getDegreeSeconds(degree, minute, seconds);
-    double secondsForMove = currentSeconds - degreeSeconds;
-    double steps = secondsForMove / secondsPerStep;
-
-    return steps;
+    return secondsForMove / secondsPerStep;
   }
 
-  void move(long steps) 
+  void move(long steps)
   {
-    Serial.print("DEC move...");
+    Serial.println("DEC AXIS: move move...");
     // Is the number of steps per command
     int iterationSteps = 10000;
     int index = abs(steps / iterationSteps);
@@ -71,5 +75,36 @@ public:
     }
 
     decStepper.step(remainderSteps);
+    Serial.println("DEC AXIS: move over");
+  }
+
+  long setDegree(int deg)
+  {
+    degree = deg;
+  }
+
+  long setMinute(int min)
+  {
+    minute = min;
+  }
+
+  long setSeconds(int sec)
+  {
+    seconds = sec;
+  }
+
+  int getDegree()
+  {
+    return currentDegree;
+  }
+
+  int getMinute()
+  {
+    return currentMinute;
+  }
+
+  int getSeconds()
+  {
+    return currentSeconds;
   }
 };
