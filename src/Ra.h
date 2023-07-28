@@ -21,16 +21,6 @@ public:
     Serial.println("RA MODULE: initialization finished");
   }
 
-  long getSeconds(int hour, int min, int sec)
-  {
-    return ((((long)hour * 60) + min) * 60) + sec;
-  }
-
-  void setRpm(int rpm)
-  {
-    raStepper.setSpeed(rpm);
-  }
-
   void init()
   {
     mountStarTime = watch.getRAStarTime(mountTime);
@@ -38,7 +28,7 @@ public:
     while (true)
     {
       long starTime = watch.getRAStarTime(mountTime);
-
+      
       if (starTime != mountStarTime)
       {
         Serial.println("RA AXIS: change coordinate");
@@ -61,6 +51,16 @@ public:
         }
       }
     }
+  }
+
+  long getSeconds(int hour, int min, int sec)
+  {
+    return ((((long)hour * 60) + min) * 60) + sec;
+  }
+
+  void setRpm(int rpm)
+  {
+    raStepper.setSpeed(rpm);
   }
 
   long getStepsToMove(int sec)

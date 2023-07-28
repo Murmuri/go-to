@@ -3,7 +3,7 @@ const int SERIAL_SPEED = 9600;
 // Pin
 const int DEC_DIRECTION_PIN = 2;
 const int DEC_SPEED_PIN = 3;
-const int RA_DIRECTION_PIN =4;
+const int RA_DIRECTION_PIN = 4;
 const int RA_SPEED_PIN = 5;
 const int WATCH_CLK_PIN = 6;
 const int WATCH_DAT_PIN = 7;

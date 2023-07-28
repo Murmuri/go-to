@@ -1,38 +1,29 @@
 #include <Arduino.h>
 #include <Config.h>
-#include <core/Dec.h>
-#include <core/Ra.h>
+#include <Arduino_Threads.h>
+#include <Control.h>
 
-const int motorInterfaceType = 1;
-Dec declination;
-Ra ra;
+Thread controlThread = Thread();
+Control control;
 
 void setup()
 {
   Serial.begin(SERIAL_SPEED);
-  Serial.print("Initialization completed");
+  Serial.print("MAIN MODULE: speed ");
+  Serial.println(SERIAL_SPEED);
+
+  pinMode(DEC_DIRECTION_PIN, OUTPUT);
+  pinMode(DEC_SPEED_PIN, OUTPUT);
+  pinMode(RA_DIRECTION_PIN, OUTPUT);
+  pinMode(RA_SPEED_PIN, OUTPUT);
+  pinMode(WATCH_CLK_PIN, OUTPUT);
+  pinMode(WATCH_DAT_PIN, OUTPUT);
+  pinMode(WATCH_RST_PIN, OUTPUT);
+
+  controlThread.onRun(control.init());
+  controlThread.run();
+
+  Serial.print("MAIN MODULE: Initialization completed");
 }
 
-void loop() 
-{
-  while (Serial.available() == 0) {}
-  
-  int dd = Serial.parseInt(); 
-  int dm = Serial.parseInt(); 
-  int ds = Serial.parseInt();
-  int rh = Serial.parseInt(); 
-  int rm = Serial.parseInt(); 
-  int rs = Serial.parseInt(); 
-  int code = Serial.parseInt(); 
-
-  Serial.print("Code: ");
-  Serial.println(code);
-
-  if (code == 99)
-  {
-    Serial.println("Go");
-    declination.goTo(dd, dm, ds);
-    ra.goTo(rh, rm, rs);
-    Serial.println("Done");
-  }
-}
+void loop() {}

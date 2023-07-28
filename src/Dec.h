@@ -78,18 +78,10 @@ public:
     Serial.println("DEC AXIS: move over");
   }
 
-  long setDegree(int deg)
+  long setDegree(int deg, int min, int sec)
   {
     degree = deg;
-  }
-
-  long setMinute(int min)
-  {
     minute = min;
-  }
-
-  long setSeconds(int sec)
-  {
     seconds = sec;
   }
 
