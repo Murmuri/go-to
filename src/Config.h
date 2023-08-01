@@ -1,5 +1,6 @@
 // Main
 const int SERIAL_SPEED = 9600;
+const int TUSK_COUNT = 3;
 // Pin
 const int DEC_DIRECTION_PIN = 2;
 const int DEC_SPEED_PIN = 3;

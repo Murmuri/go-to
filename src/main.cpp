@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <Config.h>
-#include <Arduino_Threads.h>
+#include <GyverOS.h>
 #include <Control.h>
 
-Thread controlThread = Thread();
+GyverOS<TUSK_COUNT> OS;
 Control control;
 
 void setup()
@@ -19,9 +19,8 @@ void setup()
   pinMode(WATCH_CLK_PIN, OUTPUT);
   pinMode(WATCH_DAT_PIN, OUTPUT);
   pinMode(WATCH_RST_PIN, OUTPUT);
-
-  controlThread.onRun(control.init());
-  controlThread.run();
+  OS.attach(0, control.init());
+  OS.start(0); 
 
   Serial.print("MAIN MODULE: Initialization completed");
 }

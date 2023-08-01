@@ -5,16 +5,15 @@
 const int motorInterfaceType = 1;
 Dec dec;
 Ra ra;
-Thread decThread = Thread();
-Thread raThread = Thread();
 
 class Control
 {
 public:
   Control()
   {
-    decThread.onRun(dec.init());
-    raThread.onRun(ra.init());
+    OS.attach(1, dec.init());
+    OS.attach(2, ra.init());
+    
     
     Serial.println("CONTROL MODULE: initialization finished");
   }
@@ -37,8 +36,8 @@ public:
         switch(code)
         {
             case 1: 
-                decThread.run();
-                raThread.run();
+                OS.start(1); 
+                OS.start(2); 
                 break;
             case 2: 
                 dec.setDegree(args[0], args[1], args[2]);
