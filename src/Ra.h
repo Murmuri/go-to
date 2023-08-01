@@ -1,6 +1,13 @@
 #include <Stepper.h>
-#include <Config.h>
 #include <Watch.h>
+
+int RA_DIRECTION_PIN = 4;
+int RA_SPEED_PIN = 5;
+double RA_GEAR_TRAIN = 2;
+int RA_DEFAULT_RPM = 800;
+int RA_MOTOR_STEPS = 800;
+int RA_MOUNT_STEPS = 130;
+int RA_MICRO_STEPS = 16;
 
 Stepper raStepper(RA_MOTOR_STEPS, RA_DIRECTION_PIN, RA_SPEED_PIN);
 Watch watch;
@@ -28,7 +35,7 @@ public:
     while (true)
     {
       long starTime = watch.getRAStarTime(mountTime);
-      
+
       if (starTime != mountStarTime)
       {
         Serial.println("RA AXIS: change coordinate");

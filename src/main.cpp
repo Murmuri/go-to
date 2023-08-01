@@ -1,26 +1,30 @@
 #include <Arduino.h>
-#include <Config.h>
-#include <GyverOS.h>
+#include <Thread.h>
 #include <Control.h>
 
-GyverOS<TUSK_COUNT> OS;
+int SERIAL_SPEED = 9600;
+
+Thread controlThread = Thread();
 Control control;
+
+void initControlThread()
+{
+  control.init();
+}
 
 void setup()
 {
   Serial.begin(SERIAL_SPEED);
-  Serial.print("MAIN MODULE: speed ");
+  Serial.print("MAIN MODULE: speed");
   Serial.println(SERIAL_SPEED);
 
-  pinMode(DEC_DIRECTION_PIN, OUTPUT);
-  pinMode(DEC_SPEED_PIN, OUTPUT);
-  pinMode(RA_DIRECTION_PIN, OUTPUT);
-  pinMode(RA_SPEED_PIN, OUTPUT);
   pinMode(WATCH_CLK_PIN, OUTPUT);
   pinMode(WATCH_DAT_PIN, OUTPUT);
   pinMode(WATCH_RST_PIN, OUTPUT);
-  OS.attach(0, control.init());
-  OS.start(0); 
+
+  controlThread.enabled = true;
+  controlThread.onRun(initControlThread);
+  controlThread.run();
 
   Serial.print("MAIN MODULE: Initialization completed");
 }

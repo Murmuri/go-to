@@ -1,6 +1,16 @@
 #include <Stepper.h>
-#include <Config.h>
 #include <Math.h>
+
+int DEC_DIRECTION_PIN = 2;
+int DEC_SPEED_PIN = 3;
+double DEC_GEAR_TRAIN = 3.375;
+int DEC_DEFAULT_RPM = 800;
+int DEC_MOTOR_STEPS = 800;
+int DEC_MOUNT_STEPS = 65;
+int DEC_MICRO_STEPS = 16;
+int DEFAULT_DEC_DEGREE = 90;
+int DEFAULT_DEC_MINUTE = 0;
+int DEFAULT_DEC_SECONDS = 0;
 
 Stepper decStepper(DEC_MOTOR_STEPS, DEC_DIRECTION_PIN, DEC_SPEED_PIN);
 
