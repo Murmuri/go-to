@@ -15,8 +15,11 @@ Watch watch;
 class Ra
 {
 private:
-  long mountTime = 0;
-  long mountStarTime = 0;
+  bool parking = false;
+  long currentMountPosition = 0;
+  long currentMountPositionStarTime = watch.getRAStarTime(currentMountPosition);
+  long raTime = watch.getRAStarTime(currentMountPosition);
+
   double stepsPerFullTurn = RA_MOUNT_STEPS * RA_MOTOR_STEPS * RA_GEAR_TRAIN * RA_MICRO_STEPS;
   double secondsForFullTurn = 24.00 * 60.00 * 60.00;
   double secondsPerStep = secondsForFullTurn / stepsPerFullTurn;
@@ -30,32 +33,22 @@ public:
 
   void init()
   {
-    mountStarTime = watch.getRAStarTime(mountTime);
+    raTime = watch.getRAStarTime(currentMountPosition);
 
-    while (true)
+    while (!parking)
     {
-      long starTime = watch.getRAStarTime(mountTime);
+      currentMountPositionStarTime = watch.getRAStarTime(currentMountPosition);
 
-      if (starTime != mountStarTime)
+      if (raTime != currentMountPositionStarTime)
       {
         Serial.println("RA AXIS: change coordinate");
-        long secondsForMove = starTime - mountStarTime;
+        long secondsForMove = raTime - currentMountPositionStarTime;
+        currentMountPosition = currentMountPosition + secondsForMove >= 0
+          ? (currentMountPosition + secondsForMove) % (24 * 60 * 60)
+          : (24 * 60 * 60) - (currentMountPosition + secondsForMove);
         long steps = getStepsToMove(secondsForMove);
 
         move(steps);
-        // TODO
-        if (mountTime + secondsForMove >= 24 * 60 * 60)
-        {
-          mountTime = secondsForMove - 24 * 60 * 60;
-        }
-        else if (mountTime + secondsForMove < 0)
-        {
-          mountTime = 24 * 60 * 60 + secondsForMove;
-        }
-        else
-        {
-          mountTime += secondsForMove;
-        }
       }
     }
   }
@@ -93,13 +86,13 @@ public:
     Serial.println("RA AXIS: move over");
   }
 
-  void setMountStarTime(int h, int m, int s)
+  void setRaTime(int h, int m, int s)
   {
-    mountStarTime = getSeconds(h, m, s);
+    raTime = getSeconds(h, m, s);
   }
 
-  long getMountStarTime()
+  long getRaTime()
   {
-    return mountStarTime;
+    return raTime;
   }
 };
