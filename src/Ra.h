@@ -122,6 +122,13 @@ public:
     return raTime;
   }
 
+  int getSide()
+  {
+    return currentMountPosition >= 6 * 60 * 60 && currentMountPosition < 18 * 60 * 60
+      ? -1
+      : 1;
+  }
+
   void changeParkingState()
   {
     parking = !parking;

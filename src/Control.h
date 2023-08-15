@@ -57,14 +57,10 @@ public:
         raThread.run();
         break;
       case 2:
-        dec.setDegree(args[0], args[1], args[2]);
         ra.setRaTime(args[3], args[4], args[5]);
-        break;
-      case 3:
+        dec.setSide(ra.getSide());
         dec.setDegree(args[0], args[1], args[2]);
-        break;
-      case 4:
-        ra.setRaTime(args[0], args[1], args[2]);
+        // есть проблема, если сторона поменяется во время слежения, то dec не узнает что сторона поменялась
         break;
       }
     }

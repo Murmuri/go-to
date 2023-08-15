@@ -131,9 +131,9 @@ public:
     return currentSeconds;
   }
 
-  void changeSide()
+  void setSide(int newSide)
   {
-    currentSide = currentSide * -1;
+    currentSide = newSide;
   }
 
   void changeParkingState()
