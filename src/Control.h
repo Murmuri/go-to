@@ -58,13 +58,13 @@ public:
         break;
       case 2:
         dec.setDegree(args[0], args[1], args[2]);
-        ra.setMountStarTime(args[3], args[4], args[5]);
+        ra.setRaTime(args[3], args[4], args[5]);
         break;
       case 3:
         dec.setDegree(args[0], args[1], args[2]);
         break;
       case 4:
-        ra.setMountStarTime(args[0], args[1], args[2]);
+        ra.setRaTime(args[0], args[1], args[2]);
         break;
       }
     }

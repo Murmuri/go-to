@@ -21,8 +21,8 @@ private:
   int currentDegree = DEFAULT_DEC_DEGREE;
   int currentMinute = DEFAULT_DEC_MINUTE;
   int currentSeconds = DEFAULT_DEC_SECONDS;
-  // "1" - right side, "-1" - left side 
-  int currentSide = 1; 
+  // "1" - right side, "-1" - left side
+  int currentSide = 1;
   int side = 1;
   int degree = DEFAULT_DEC_DEGREE;
   int minute = DEFAULT_DEC_MINUTE;
@@ -31,60 +31,10 @@ private:
   double secondsForFullTurn = 360.00 * 60.00 * 60.00;
   double secondsPerStep = secondsForFullTurn / stepsPerFullTurn;
 
-public:
-  Dec()
-  {
-    setRpm(DEC_DEFAULT_RPM);
-    Serial.println("DEC MODULE: initialization finished");
-  }
-
   long getDegreeSeconds(int deg, int min, int sec)
   {
     long seconds = ((((long)abs(deg) * 60) + min) * 60) + sec;
     return (deg / abs(deg)) * seconds;
-  }
-
-  void setRpm(int rpm)
-  {
-    decStepper.setSpeed(rpm);
-  }
-
-  void init()
-  {
-    while (!parking)
-    {
-      bool changeSide = currentSide != side;
-      
-      if (changeSide) 
-      {
-        Serial.println("DEC AXIS: change side");
-        long stepsToDefaultPosition = getStepsToMove(
-          getDegreeSeconds(currentDegree, currentMinute, currentSeconds) 
-          - getDegreeSeconds(DEFAULT_DEC_DEGREE, DEFAULT_DEC_MINUTE, DEFAULT_DEC_SECONDS)
-        );
-        move(stepsToDefaultPosition * currentSide);
-
-        currentSide = side;
-        currentDegree = DEFAULT_DEC_DEGREE;
-        currentMinute = DEFAULT_DEC_MINUTE;
-        currentSeconds = DEFAULT_DEC_SECONDS;
-      }
-
-      long currentTotalSeconds = getDegreeSeconds(currentDegree, currentMinute, currentSeconds);
-      long totalSeconds = getDegreeSeconds(degree, minute, seconds);
-      
-      if (currentTotalSeconds != totalSeconds)
-      {
-        Serial.println("DEC AXIS: change coordinate");
-        long secondsForMove = currentTotalSeconds - totalSeconds;
-        long steps = getStepsToMove(secondsForMove);
-        move(steps * currentSide);
-
-        currentDegree = degree;
-        currentMinute = minute;
-        currentSeconds = seconds;
-      }
-    }
   }
 
   long getStepsToMove(long secondsForMove)
@@ -110,6 +60,55 @@ public:
     Serial.println("DEC AXIS: move over");
   }
 
+public:
+  Dec()
+  {
+    setRpm(DEC_DEFAULT_RPM);
+    Serial.println("DEC MODULE: initialization finished");
+  }
+
+  void setRpm(int rpm)
+  {
+    decStepper.setSpeed(rpm);
+  }
+
+  void init()
+  {
+    while (!parking)
+    {
+      bool changeSide = currentSide != side;
+
+      if (changeSide)
+      {
+        Serial.println("DEC AXIS: change side");
+        long stepsToDefaultPosition = getStepsToMove(
+          getDegreeSeconds(currentDegree, currentMinute, currentSeconds) - getDegreeSeconds(DEFAULT_DEC_DEGREE, DEFAULT_DEC_MINUTE, DEFAULT_DEC_SECONDS)
+        );
+        move(stepsToDefaultPosition * currentSide);
+
+        currentSide = side;
+        currentDegree = DEFAULT_DEC_DEGREE;
+        currentMinute = DEFAULT_DEC_MINUTE;
+        currentSeconds = DEFAULT_DEC_SECONDS;
+      }
+
+      long currentTotalSeconds = getDegreeSeconds(currentDegree, currentMinute, currentSeconds);
+      long totalSeconds = getDegreeSeconds(degree, minute, seconds);
+
+      if (currentTotalSeconds != totalSeconds)
+      {
+        Serial.println("DEC AXIS: change coordinate");
+        long secondsForMove = currentTotalSeconds - totalSeconds;
+        long steps = getStepsToMove(secondsForMove);
+        move(steps * currentSide);
+
+        currentDegree = degree;
+        currentMinute = minute;
+        currentSeconds = seconds;
+      }
+    }
+  }
+
   long setDegree(int deg, int min, int sec)
   {
     degree = deg;
@@ -132,12 +131,12 @@ public:
     return currentSeconds;
   }
 
-  int changeSide()
+  void changeSide()
   {
     currentSide = currentSide * -1;
   }
 
-  int changeParkingState()
+  void changeParkingState()
   {
     parking = !parking;
   }

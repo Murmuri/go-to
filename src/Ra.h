@@ -17,6 +17,7 @@ class Ra
 private:
   bool parking = false;
   long currentMountPosition = 0;
+  long realMountPosition = 0;
   long currentMountPositionStarTime = watch.getRAStarTime(currentMountPosition);
   long raTime = watch.getRAStarTime(currentMountPosition);
 
@@ -24,33 +25,18 @@ private:
   double secondsForFullTurn = 24.00 * 60.00 * 60.00;
   double secondsPerStep = secondsForFullTurn / stepsPerFullTurn;
 
-public:
-  Ra()
+  long receiveTopSidePosition(long position)
   {
-    setRpm(RA_DEFAULT_RPM);
-    Serial.println("RA MODULE: initialization finished");
+    return position >= 6 * 60 * 60 && position < 18 * 60 * 60
+      ? (position + 12 * 60 * 60) % (24 * 60 * 60)
+      : position;
   }
 
-  void init()
+  long receiveCurrentMountPosition(long position, long seconds)
   {
-    raTime = watch.getRAStarTime(currentMountPosition);
-
-    while (!parking)
-    {
-      currentMountPositionStarTime = watch.getRAStarTime(currentMountPosition);
-
-      if (raTime != currentMountPositionStarTime)
-      {
-        Serial.println("RA AXIS: change coordinate");
-        long secondsForMove = raTime - currentMountPositionStarTime;
-        currentMountPosition = currentMountPosition + secondsForMove >= 0
-          ? (currentMountPosition + secondsForMove) % (24 * 60 * 60)
-          : (24 * 60 * 60) - (currentMountPosition + secondsForMove);
-        long steps = getStepsToMove(secondsForMove);
-
-        move(steps);
-      }
-    }
+    return position + seconds >= 0
+      ? (position + seconds) % (24 * 60 * 60)
+      : (24 * 60 * 60) + (position + seconds);
   }
 
   long getSeconds(int hour, int min, int sec)
@@ -58,14 +44,19 @@ public:
     return ((((long)hour * 60) + min) * 60) + sec;
   }
 
-  void setRpm(int rpm)
-  {
-    raStepper.setSpeed(rpm);
-  }
-
   long getStepsToMove(int sec)
   {
     return sec / secondsPerStep;
+  }
+
+  long getModulePosition(long position)
+  {
+    if (position >= 18 * 60 * 60 && position < 24 * 60 * 60)
+    {
+      return position - 18 * 60 * 60;
+    }
+
+    return position + 6 * 60 * 60;
   }
 
   void move(long steps)
@@ -86,6 +77,41 @@ public:
     Serial.println("RA AXIS: move over");
   }
 
+public:
+  Ra()
+  {
+    setRpm(RA_DEFAULT_RPM);
+    Serial.println("RA MODULE: initialization finished");
+  }
+
+  void init()
+  {
+    raTime = watch.getRAStarTime(currentMountPosition);
+
+    while (!parking)
+    {
+      currentMountPositionStarTime = watch.getRAStarTime(currentMountPosition);
+
+      if (raTime != currentMountPositionStarTime)
+      {
+        Serial.println("RA AXIS: change coordinate");
+        long secondsForMove = raTime - currentMountPositionStarTime;
+        realMountPosition = receiveTopSidePosition(currentMountPosition);
+        currentMountPosition = receiveCurrentMountPosition(currentMountPosition, secondsForMove);
+        long realToGoPosition = receiveTopSidePosition(currentMountPosition);
+        secondsForMove = getModulePosition(realToGoPosition) - getModulePosition(realToGoPosition);
+        long steps = getStepsToMove(secondsForMove);
+        move(steps);
+        realMountPosition = realToGoPosition;
+      }
+    }
+  }
+
+  void setRpm(int rpm)
+  {
+    raStepper.setSpeed(rpm);
+  }
+
   void setRaTime(int h, int m, int s)
   {
     raTime = getSeconds(h, m, s);
@@ -94,5 +120,10 @@ public:
   long getRaTime()
   {
     return raTime;
+  }
+
+  void changeParkingState()
+  {
+    parking = !parking;
   }
 };
