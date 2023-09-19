@@ -1,5 +1,6 @@
 #include "../config.h"
 #include <Stepper.h>
+#include <Math.h>
 
 Stepper decStepper(DEC_MOTOR_STEPS, DEC_DIRECTION_PIN, DEC_SPEED_PIN);
 

@@ -1,7 +1,4 @@
 #include "Dec.h"
-#include "../config.h"
-#include <Math.h>
-
 
 void MotorController::initialize()
 {
@@ -70,14 +67,14 @@ Coordinates MotorController::getCoordinates(Coordinates C)
   return (C);
 }
 
-void MotorController::setSide(int newSide)
+void MotorController::setSide(int s)
 {
-  currentSide = newSide;
+  currentSide = s;
 }
 
-void MotorController::setParking(bool newState)
+void MotorController::setParking(bool p)
 {
-  parking = newState;
+  parking = p;
 }
 
 long MotorController::getDegreesInSeconds(int deg, int min, int sec)
