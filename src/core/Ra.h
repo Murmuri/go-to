@@ -1,16 +1,10 @@
-#include "../config.h"
 #include <Stepper.h>
-#include <Watch.h>
+#include <MountController.h>
+
+const int POSITIVE_SIDE = 1;
+const int NEGATIVE_SIDE = -1;
 
 Stepper raStepper(RA_MOTOR_STEPS, RA_DIRECTION_PIN, RA_SPEED_PIN);
-Watch watch;
-
-struct Coordinates {
-  int hour;
-  int min;
-  int sec;
-};
-
 
 class Ra
 {
@@ -18,11 +12,11 @@ class Ra
     bool parking = false;
     long currentMountPosition = 0;
     long realMountPosition = 0;
-    long currentMountPositionStarTime = watch.getRAStarTime(currentMountPosition);
-    long raTime = watch.getRAStarTime(currentMountPosition);
+    long currentMountPositionStarTime = 0;
+    long raTime = 0;
 
     double stepsPerFullTurn = RA_MOUNT_STEPS * RA_MOTOR_STEPS * RA_GEAR_TRAIN * RA_MICRO_STEPS;
-    double secondsForFullTurn = 24.00 * 60.00 * 60.00;
+    double secondsForFullTurn = 24.00 * HOURS_IN_SEC;
     double secondsPerStep = secondsForFullTurn / stepsPerFullTurn;
 
     long receiveTopSidePosition(long position)
@@ -37,8 +31,12 @@ class Ra
 
     void move(long steps)
 
+    Clock& _clock;
+
 
   public:
+    Ra(Clock& clock): _clock(clock) {}
+    
     void initialize()
 
     void update()
@@ -46,8 +44,6 @@ class Ra
     void setRpm(int rpm)
 
     void setCoordinates(int h, int m, int s)
-
-    Coordinates getCoordinates(Coordinates C)
   
     int getSide()
 

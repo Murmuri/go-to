@@ -5,9 +5,8 @@
 #include "./core/Clock.h"
 
 Clock clock;
-MountController mount;
-
-Control control(mount, watch);
+MountController mount(clock);
+Control control(mount, clock);
 
 void setup()
 {

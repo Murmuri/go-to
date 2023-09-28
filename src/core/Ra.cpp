@@ -1,25 +1,21 @@
 #include "Ra.h"
 
-const int HOURS_IN_SEC = 60 * 60;
-const int POSITIVE_SIDE = 1;
-const int NEGATIVE_SIDE = -1;
-
 void Ra::initialize()
 {
   setRpm(RA_DEFAULT_RPM);
-  raTime = watch.getRAStarTime(currentMountPosition);
+  raTime = _clock.getRAStarTime(currentMountPosition);
 
   Serial.println("RA MODULE: initialization finished");
 }
 
 void Ra::update()
 {
-  if (parking) 
-  { 
-    return; 
+  if (parking)
+  {
+    return;
   }
 
-  currentMountPositionStarTime = watch.getRAStarTime(currentMountPosition);
+  currentMountPositionStarTime = _clock.getRAStarTime(currentMountPosition);
 
   if (raTime != currentMountPositionStarTime)
   {
@@ -45,22 +41,13 @@ void Ra::setCoordinates(int h, int m, int s)
   raTime = getHoursInSeconds(h, m, s);
 }
 
-Coordinates MotorController::getCoordinates(Coordinates C)
-{
-  C.hour = raTime / HOURS_IN_SEC;
-  C.min = raTime % HOURS_IN_SEC / 60;
-  C.sec = raTime % 60;
-
-  return (C);
-}
-
 int Ra::getSide()
 {
-  if (currentMountPosition >= 6 * HOURS_IN_SEC && currentMountPosition < 18 * HOURS_IN_SEC) 
+  if (currentMountPosition >= 6 * HOURS_IN_SEC && currentMountPosition < 18 * HOURS_IN_SEC)
   {
     return NEGATIVE_SIDE;
   }
-  
+
   return POSITIVE_SIDES;
 }
 
@@ -75,7 +62,7 @@ long Ra::receiveTopSidePosition(long position)
   {
     return (position + (12 * HOURS_IN_SEC)) % (24 * HOURS_IN_SEC)
   }
-  
+
   return position;
 }
 
@@ -85,7 +72,7 @@ long Ra::receiveCurrentMountPosition(long position, long seconds)
   {
     return (position + seconds) % (24 * HOURS_IN_SEC);
   }
-  
+
   return (24 * HOURS_IN_SEC) + (position + seconds);
 }
 
@@ -112,14 +99,12 @@ long Ra::getModulePosition(long position)
 void Ra::move(long steps)
 {
   Serial.println("RA MODULE: move move...");
-  // Is the number of steps per command
-  int iterationSteps = 10000;
-  int index = abs(steps / iterationSteps);
-  int remainderSteps = steps % iterationSteps;
+  int index = abs(steps / HOURS_IN_SEC);
+  int remainderSteps = steps % HOURS_IN_SEC;
 
   while (index > 0)
   {
-    raStepper.step(iterationSteps);
+    raStepper.step(HOURS_IN_SEC);
     index--;
   }
 

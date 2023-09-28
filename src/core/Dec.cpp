@@ -58,15 +58,6 @@ void MotorController::setCoordinates(int deg, int min, int sec)
   seconds = sec;
 }
 
-Coordinates MotorController::getCoordinates(Coordinates C)
-{
-  C.deg = currentDegree;
-  C.min = currentMinute;
-  C.sec = currentSeconds;
-
-  return (C);
-}
-
 void MotorController::setSide(int s)
 {
   currentSide = s;
@@ -91,14 +82,12 @@ long MotorController::getStepsToMove(long secondsForMove)
 void MotorController::move(long steps)
 {
   Serial.println("DEC MODULE: move move...");
-  // Is the number of steps per command
-  int iterationSteps = 10000;
-  int index = abs(steps / iterationSteps);
-  int remainderSteps = steps % iterationSteps;
+  int index = abs(steps / INTERATION_STEPS);
+  int remainderSteps = steps % INTERATION_STEPS;
 
   while (index > 0)
   {
-    decStepper.step(iterationSteps);
+    decStepper.step(INTERATION_STEPS);
     index--;
   }
 
