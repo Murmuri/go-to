@@ -5,6 +5,8 @@
 #include "./core/Clock.h"
 
 Clock clock;
+clock.initialize();
+
 MountController mount(clock);
 Control control(mount, clock);
 
