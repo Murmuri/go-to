@@ -1,4 +1,5 @@
 #include "../config.h"
+#include "Keypad.h"
 
 #define C_ARROW_UP 				      KP_KEY_UP_ARROW
 #define C_ARROW_LEFT            KP_KEY_LEFT_ARROW
@@ -65,7 +66,7 @@ class Control
     }
 
     State _state;
-    // Keypad _keypad;
+    Keypad _keypad;
     State _subState;
 
     Clock& _clock;

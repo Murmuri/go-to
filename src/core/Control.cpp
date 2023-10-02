@@ -3,12 +3,15 @@
 void Control::initialize() 
 {
   _mount.initialize();
+  _keypad.initialize();
+
   delay(100);
   _state = GOTO;
 }
 
 void Control::update() 
 {
+  _keypad.update();
   _mount.update();
 
   switch (_state) {
@@ -32,120 +35,120 @@ void Control::update()
 
 void Control::gotoItem() 
 {
-  // if (_keypad.pushed(C_ARROW_UP)) changeState(OBJECTS);
-  // if (_keypad.pushed(C_ARROW_DOWN)) changeState(MANUAL);
-  // if (_keypad.pushed(C_ENTER))
-  // {
-  //   changeState(NULL);
-  //   changeSubState(GOTO);
-  // }
+  if (_keypad.pushed(C_ARROW_UP)) changeState(OBJECTS);
+  if (_keypad.pushed(C_ARROW_DOWN)) changeState(MANUAL);
+  if (_keypad.pushed(C_ENTER))
+  {
+    changeState(NULL);
+    changeSubState(GOTO);
+  }
 }
 
 void Control::manualControlItem() 
 {
-  // if (_keypad.pushed(C_ARROW_UP)) changeState(GOTO);
-  // if (_keypad.pushed(C_ARROW_DOWN)) changeState(COORDINATE);
-  // if (_keypad.pushed(C_ENTER))
-  // {
-  //   changeState(NULL);
-  //   changeSubState(MANUAL);
-  // }
+  if (_keypad.pushed(C_ARROW_UP)) changeState(GOTO);
+  if (_keypad.pushed(C_ARROW_DOWN)) changeState(COORDINATE);
+  if (_keypad.pushed(C_ENTER))
+  {
+    changeState(NULL);
+    changeSubState(MANUAL);
+  }
 }
 
 void Control::coordinateItem() 
 {
-  // if (_keypad.pushed(C_ARROW_UP)) changeState(MANUAL);
-  // if (_keypad.pushed(C_ARROW_DOWN)) changeState(TIME);
-  // if (_keypad.pushed(C_ENTER))
-  // {
-  //   changeState(NULL);
-  //   changeSubState(COORDINATE);
-  // }
+  if (_keypad.pushed(C_ARROW_UP)) changeState(MANUAL);
+  if (_keypad.pushed(C_ARROW_DOWN)) changeState(TIME);
+  if (_keypad.pushed(C_ENTER))
+  {
+    changeState(NULL);
+    changeSubState(COORDINATE);
+  }
 }
 
 void Control::timeItem() 
 {
-  // if (_keypad.pushed(C_ARROW_UP)) changeState(COORDINATE);
-  // if (_keypad.pushed(C_ARROW_DOWN)) changeState(BRIGHT);
-  // if (_keypad.pushed(C_ENTER))
-  // {
-  //   changeState(NULL);
-  //   changeSubState(TIME);
-  // }
+  if (_keypad.pushed(C_ARROW_UP)) changeState(COORDINATE);
+  if (_keypad.pushed(C_ARROW_DOWN)) changeState(BRIGHT);
+  if (_keypad.pushed(C_ENTER))
+  {
+    changeState(NULL);
+    changeSubState(TIME);
+  }
 }
 
 void Control::brightnessItem() 
 {
-  // if (_keypad.pushed(C_ARROW_UP)) changeState(TIME);
-  // if (_keypad.pushed(C_ARROW_DOWN)) changeState(OBJECTS);
-  // if (_keypad.pushed(C_ENTER))
-  // {
-  //   changeState(NULL);
-  //   changeSubState(BRIGHT);
-  // }
+  if (_keypad.pushed(C_ARROW_UP)) changeState(TIME);
+  if (_keypad.pushed(C_ARROW_DOWN)) changeState(OBJECTS);
+  if (_keypad.pushed(C_ENTER))
+  {
+    changeState(NULL);
+    changeSubState(BRIGHT);
+  }
 }
 
 void Control::objectsItem() 
 {
-  // if (_keypad.pushed(C_ARROW_UP)) changeState(BRIGHT);
-  // if (_keypad.pushed(C_ARROW_DOWN)) changeState(GOTO);
-  // if (_keypad.pushed(C_ENTER))
-  // {
-  //   changeState(NULL);
-  //   changeSubState(OBJECTS);
-  // }
+  if (_keypad.pushed(C_ARROW_UP)) changeState(BRIGHT);
+  if (_keypad.pushed(C_ARROW_DOWN)) changeState(GOTO);
+  if (_keypad.pushed(C_ENTER))
+  {
+    changeState(NULL);
+    changeSubState(OBJECTS);
+  }
 }
 
 void Control::gotoMenu() 
 {
-  // if (_keypad.pushed(C_EXIT))
-  // {
-  //   changeState(GOTO);
-  //   changeSubState(NULL);
-  // }
+  if (_keypad.pushed(C_EXIT))
+  {
+    changeState(GOTO);
+    changeSubState(NULL);
+  }
 }
 
 void Control::manualControlMenu() 
 {
-  // if (_keypad.pushed(C_EXIT))
-  // {
-  //   changeState(MANUAL);
-  //   changeSubState(NULL);
-  // }
+  if (_keypad.pushed(C_EXIT))
+  {
+    changeState(MANUAL);
+    changeSubState(NULL);
+  }
 }
 
 void Control::coordinateMenu() 
 {
-  // if (_keypad.pushed(C_EXIT))
-  // {
-  //   changeState(COORDINATE);
-  //   changeSubState(NULL);
-  // }
+  if (_keypad.pushed(C_EXIT))
+  {
+    changeState(COORDINATE);
+    changeSubState(NULL);
+  }
 }
 
 void Control::timeMenu() 
 {
-  // if (_keypad.pushed(C_EXIT))
-  // {
-  //   changeState(TIME);
-  //   changeSubState(NULL);
-  // }
+  if (_keypad.pushed(C_EXIT))
+  {
+    changeState(TIME);
+    changeSubState(NULL);
+  }
 }
 
 void Control::brightnessMenu() 
 {
-  // if (_keypad.pushed(C_EXIT))
-  // {
-  //   changeState(BRIGHT);
-  //   changeSubState(NULL);
-  // }
+  if (_keypad.pushed(C_EXIT))
+  {
+    changeState(BRIGHT);
+    changeSubState(NULL);
+  }
 }
 
 void Control::objectsMenu() 
 {
-  // if (_keypad.pushed(C_EXIT))
-  // {
-  //   changeState(OBJECTS);
-  //   changeSubState(NULL);
-  // }
+  if (_keypad.pushed(C_EXIT))
+  {
+    changeState(OBJECTS);
+    changeSubState(NULL);
+  }
 }
