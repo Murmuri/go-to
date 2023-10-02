@@ -1,4 +1,4 @@
-#include "control.h"
+#include "Control.h"
 
 void Control::initialize() 
 {
@@ -42,6 +42,8 @@ void Control::gotoItem()
     changeState(NULL);
     changeSubState(GOTO);
   }
+
+  _display.renderGotoItem();
 }
 
 void Control::manualControlItem() 
@@ -53,6 +55,8 @@ void Control::manualControlItem()
     changeState(NULL);
     changeSubState(MANUAL);
   }
+
+  _display.renderManualItem();
 }
 
 void Control::coordinateItem() 
@@ -64,6 +68,8 @@ void Control::coordinateItem()
     changeState(NULL);
     changeSubState(COORDINATE);
   }
+
+  _display.renderCoordinateItem();
 }
 
 void Control::timeItem() 
@@ -75,6 +81,8 @@ void Control::timeItem()
     changeState(NULL);
     changeSubState(TIME);
   }
+
+  _display.renderTimeItem();
 }
 
 void Control::brightnessItem() 
@@ -86,6 +94,8 @@ void Control::brightnessItem()
     changeState(NULL);
     changeSubState(BRIGHT);
   }
+
+  _display.renderBrightnessItem();
 }
 
 void Control::objectsItem() 
@@ -97,6 +107,8 @@ void Control::objectsItem()
     changeState(NULL);
     changeSubState(OBJECTS);
   }
+
+  _display.renderObjectsItem();
 }
 
 void Control::gotoMenu() 

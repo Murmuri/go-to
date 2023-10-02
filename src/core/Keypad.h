@@ -33,12 +33,12 @@ class Keypad
     // returns true if the given key was pressed for longer than SHORT_HOLD_TIME_MS
     inline boolean pushed(uint32_t key_code) 
     { 
-      return pressed_internal(key_code, SHORT_HOLD_TIME_MS); 
+      return pressedInternal(key_code, SHORT_HOLD_TIME_MS); 
     }
     // returns true if the given key was pressed for longer than LONG_HOLD_TIME_MS
     inline boolean pressed(uint32_t key_code) 
     { 
-      return pressed_internal(key_code, LONG_HOLD_TIME_MS); 
+      return pressedInternal(key_code, LONG_HOLD_TIME_MS); 
     }
 
     void update() 
@@ -48,7 +48,7 @@ class Keypad
       if (_last_used_key == 0 && (millis() - _last_update) < KP_UPDATE_MS) return;
       _last_update = millis();
 
-      uint32_t new_key = get_key();
+      uint32_t new_key = getKey();
     
       if (new_key == _used_key) return;
 
@@ -59,7 +59,7 @@ class Keypad
     }
 
   private:
-    uint32_t get_key() 
+    uint32_t getKey() 
     {
       decode_results results;
       if (!_recv.decode(&results)) return 0;
