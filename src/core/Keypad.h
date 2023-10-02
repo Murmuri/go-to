@@ -20,20 +20,29 @@
 
 #define KP_UPDATE_MS         200     
 
-class Keypad {
+class Keypad 
+{
   public:
     Keypad() : _recv(IRrecv(KEYPAD_IR_PIN)) {}
 
-    void initialize() {
+    void initialize() 
+    {
       _recv.enableIRIn();
       _recv.blink13(false);
     }
     // returns true if the given key was pressed for longer than SHORT_HOLD_TIME_MS
-    inline boolean pushed(uint32_t key_code) { return pressed_internal(key_code, SHORT_HOLD_TIME_MS); }
+    inline boolean pushed(uint32_t key_code) 
+    { 
+      return pressed_internal(key_code, SHORT_HOLD_TIME_MS); 
+    }
     // returns true if the given key was pressed for longer than LONG_HOLD_TIME_MS
-    inline boolean pressed(uint32_t key_code) { return pressed_internal(key_code, LONG_HOLD_TIME_MS); }
+    inline boolean pressed(uint32_t key_code) 
+    { 
+      return pressed_internal(key_code, LONG_HOLD_TIME_MS); 
+    }
 
-    void update() {
+    void update() 
+    {
       _hold_time = 0;
 
       if (_last_used_key == 0 && (millis() - _last_update) < KP_UPDATE_MS) return;
@@ -50,15 +59,8 @@ class Keypad {
     }
 
   private:
-    inline bool pressed_internal(uint32_t key_code, unsigned long duration) {
-      if (key_code != _last_used_key) return false; 
-      if (_hold_time >= duration) {
-        _hold_time = 0;
-        return true;
-      } else return false;
-    }
-
-    uint32_t get_key() {
+    uint32_t get_key() 
+    {
       decode_results results;
       if (!_recv.decode(&results)) return 0;
 
