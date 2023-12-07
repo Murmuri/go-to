@@ -4,9 +4,9 @@ void MountController::initialize()
   ra.initialize();
   long raTime = ra.getRaTime();
 
-  raCoordinates.hour = raTime/(HOURS_IN_SEC);
-  raCoordinates.min = (raTime / 60) % 60;
-  raCoordinates.sec = raTime % 60;
+  raCoordinateHours = raTime/(HOURS_IN_SEC);
+  raCoordinatesMinutes = (raTime / 60) % 60;
+  raCoordinatesSeconds = raTime % 60;
 
   update();
 
@@ -15,38 +15,70 @@ void MountController::initialize()
 
 void MountController::update()
 {
-  ra.setRaTime(raCoordinates.hour, raCoordinates.min, raCoordinates.sec);
+  ra.setRaTime(raCoordinateHours, raCoordinatesMinutes, raCoordinatesSeconds);
   dec.setSide(ra.getSide());
-  dec.setDegree(decCoordinates.deg, decCoordinates.min, decCoordinates.sec);
+  dec.setDegree(decCoordinatesDegrees, decCoordinatesMinutes, decCoordinatesSeconds);
 
   dec.update();
   ra.update();
 }
 
-void MountController::setRaCoordinate(int h, int m, int s)
+void MountController::setRaCoordinateHours(int hour)
 {
-  raCoordinates.hour = h;
-  raCoordinates.min = m;
-  raCoordinates.sec = s;
+  raCoordinateHours = hour;
 }
 
-void MountController::setDecCoordinate(int d, int m, int s)
+void MountController::setRaCoordinateMinutes(int min)
 {
-  decCoordinates.deg = d;
-  decCoordinates.min = m;
-  decCoordinates.sec = s;
+  raCoordinatesMinutes = min;
 }
 
-void MountController::getRaCoordinate(int &h, int &m, int &s)
+void MountController::setRaCoordinateSeconds(int sec)
 {
-  h = raCoordinates.hour;
-  m = raCoordinates.min;
-  s = raCoordinates.hour;
+  raCoordinatesSeconds = sec;
 }
 
-void MountController::getDecCoordinate(int &d, int &m, int &s)
+void MountController::getRaCoordinateHours()
 {
-  d = decCoordinates.deg;
-  m = decCoordinates.min;
-  s = decCoordinates.sec;
+  return raCoordinateHours;
+}
+
+void MountController::getRaCoordinateMinutes()
+{
+  return raCoordinatesMinutes;
+}
+
+void MountController::getRaCoordinateSeconds()
+{
+  return raCoordinatesSeconds;
+}
+
+void MountController::setDecCoordinateDegrees(int deg)
+{
+  decCoordinatesDegrees = deg;
+}
+
+void MountController::setDecCoordinateMinutes(int min)
+{
+  decCoordinatesMinutes = min;
+}
+
+void MountController::setDecCoordinateSeconds(int sec)
+{
+  decCoordinatesSeconds = sec;
+}
+
+void MountController::getDecCoordinateDegrees()
+{
+  return decCoordinatesDegrees;
+}
+
+void MountController::getDecCoordinateMinutes()
+{
+  return decCoordinatesMinutes;
+}
+
+void MountController::getDecCoordinateSeconds()
+{
+  return decCoordinatesSeconds;
 }

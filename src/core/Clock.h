@@ -9,8 +9,6 @@ class Clock
 {
   public:
     void initialize()
-
     long getStarUnixTime()
-    
     long getRAStarTime(long mountTime)
 };
